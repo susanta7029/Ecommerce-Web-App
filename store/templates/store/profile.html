@@ -1,0 +1,23 @@
+{% extends 'store/base.html' %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <h2 class="mb-4">My Profile</h2>
+    <div class="card shadow-sm p-4 mb-4">
+        <form method="post">
+            {% csrf_token %}
+            <h5>Profile Info</h5>
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+    </div>
+    <div class="card shadow-sm p-4">
+        <form method="post">
+            {% csrf_token %}
+            <h5>Change Password</h5>
+            {{ pwd_form.as_p }}
+            <button type="submit" class="btn btn-warning">Change Password</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

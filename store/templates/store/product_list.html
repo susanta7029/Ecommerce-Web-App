@@ -1,0 +1,143 @@
+{% extends 'store/base.html' %}
+{% block title %}Product Listings{% endblock %}
+{% block extra_head %}
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1515168833906-d2a3b82b1e2e?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            color: #fff;
+            padding: 60px 0 40px 0;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        .hero-section h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .hero-section p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+        .product-card {
+            border-radius: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            border: none;
+        }
+        .product-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.13);
+        }
+        .product-img {
+            height: 220px;
+            object-fit: contain;
+            background-color: #fff;
+            padding: 18px;
+            border-radius: 12px 12px 0 0;
+        }
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .card-text {
+            font-size: 0.97rem;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #4e54c8 0%, #8f94fb 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #8f94fb 0%, #4e54c8 100%);
+        }
+        @media (max-width: 767px) {
+            .hero-section h1 { font-size: 2rem; }
+            .product-img { height: 140px; }
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section mb-4">
+    <div class="container">
+        <h1>Discover Amazing Products</h1>
+        <p>Shop the latest and greatest at unbeatable prices. Fast delivery, secure checkout, and top-rated products!</p>
+    </div>
+</div>
+<!-- Main Content -->
+<div class="container mt-4">
+    <!-- Filter and Search -->
+    <form method="get" class="row g-3 align-items-center mb-4">
+        <div class="col-md-4">
+            <input type="text" name="q" class="form-control" placeholder="Search products..." value="{{ request.GET.q }}">
+        </div>
+        <div class="col-md-4">
+            <select name="category" class="form-select" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for value, label in categories %}
+                    <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+    </form>
+    <!-- Product Cards -->
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card product-card shadow-sm h-100">
+                <a href="{% url 'product_detail' product.id %}" style="text-decoration:none;color:inherit;">
+                    <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.name }}">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted">{{ product.category|capfirst }}</p>
+                        <p class="card-text">{{ product.description|truncatechars:80 }}</p>
+                        <div class="mt-auto">
+                            <h5 class="text-success mb-3">₹{{ product.price }}</h5>
+                        </div>
+                    </div>
+                </a>
+                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary w-100">Add to Cart</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>No products found.</p>
+        {% endfor %}
+    </div>
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav aria-label="Product pagination">
+        <ul class="pagination justify-content-center mt-4">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Next</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

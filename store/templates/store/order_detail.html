@@ -1,0 +1,35 @@
+{% extends 'store/base.html' %}
+{% block title %}Order Details{% endblock %}
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <h2 class="mb-4 text-center">Order Details</h2>
+    <div class="card shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0">Order ID: {{ order.id }}</h5>
+            <span class="badge 
+                {% if order.status == 'processing' %}bg-warning text-dark
+                {% elif order.status == 'shipped' %}bg-info text-dark
+                {% elif order.status == 'delivered' %}bg-success
+                {% elif order.status == 'cancelled' %}bg-danger
+                {% endif %}">
+                {{ order.get_status_display }}
+            </span>
+        </div>
+        <hr>
+        <div class="d-flex align-items-center mb-3">
+            <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="rounded me-3" style="width: 80px; height: 80px; object-fit: cover; background: #f8f9fa;">
+            <div>
+                <p class="mb-1"><strong>Product:</strong> {{ order.product.name }}</p>
+                <p class="mb-1"><strong>Category:</strong> {{ order.product.category|capfirst }}</p>
+            </div>
+        </div>
+        <p><strong>Quantity:</strong> {{ order.quantity }}</p>
+        <p><strong>Price per item:</strong> ₹{{ order.product.price }}</p>
+        <p><strong>Total:</strong> ₹{{ total|floatformat:2 }}</p>
+        <p><strong>Ordered at:</strong> {{ order.ordered_at|date:'M d, Y H:i' }}</p>
+    </div>
+    <div class="text-center">
+        <a href="{% url 'my_orders' %}" class="btn btn-secondary mt-3">Back to My Orders</a>
+    </div>
+</div>
+{% endblock %}
