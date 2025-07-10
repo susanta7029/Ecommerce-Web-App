@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -121,15 +126,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGIN_URL = '/login/'
 
-STRIPE_PUBLISHABLE_KEY = "pk_test_51Rh88AE97p6gNzO6uRhuJfup0f0d97PNQ7sQV4x4PyOHIgyMcw3ujfanPjZKxqVapFCgJ8MDAVHuV9EnUTx7884s00Zh12NlCv"
-STRIPE_SECRET_KEY = "sk_test_51Rh88AE97p6gNzO69lPOkeIWfeNyD1ROtZYgAr7Q2O73iT4rrQLj2vJheCQGdG2jx9Abj1OgKBL0oKsDlkZEx5Lt00OdxS7yPF"
+STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
