@@ -22,37 +22,35 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
+                {% if not user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light me-2" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown ms-2">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {% if user.is_authenticated %}
-                            <span class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center me-2" style="width:32px;height:32px;font-weight:600;">
-                                {{ user.first_name|default:user.username|slice:":1"|upper }}
-                            </span>
-                        {% else %}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-circle me-1" viewBox="0 0 16 16">
-                              <path d="M11 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
-                              <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0 0 14A7 7 0 0 0 8 1z"/>
-                            </svg>
-                        {% endif %}
+                        <span class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center me-2" style="width:32px;height:32px;font-weight:600;">
+                            {{ user.first_name|default:user.username|slice:":1"|upper }}
+                        </span>
                         Account
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
-                        {% if user.is_authenticated %}
-                            <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
-                            <li><a class="dropdown-item" href="{% url 'wishlist' %}">Wishlist</a></li>
-                            <li><a class="dropdown-item" href="{% url 'my_orders' %}">My Orders</a></li>
-                            <li><a class="dropdown-item" href="{% url 'view_cart' %}">Cart</a></li>
-                            {% if user.is_staff %}
-                                <li><a class="dropdown-item" href="{% url 'manage_orders' %}">Manage Orders</a></li>
-                            {% endif %}
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'user_logout' %}">Logout</a></li>
-                        {% else %}
-                            <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
-                            <li><a class="dropdown-item" href="{% url 'register' %}">Register</a></li>
+                        <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'wishlist' %}">Wishlist</a></li>
+                        <li><a class="dropdown-item" href="{% url 'my_orders' %}">My Orders</a></li>
+                        <li><a class="dropdown-item" href="{% url 'view_cart' %}">Cart</a></li>
+                        {% if user.is_staff %}
+                            <li><a class="dropdown-item" href="{% url 'manage_orders' %}">Manage Orders</a></li>
                         {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'user_logout' %}">Logout</a></li>
                     </ul>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </div>
